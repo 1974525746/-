@@ -1,0 +1,77 @@
+C51 COMPILER V9.60.7.0   MAIN                                                              04/09/2023 19:44:03 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: H:\keli\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main.ls
+                    -t) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+*** WARNING C500 IN LINE 1 OF main.c: SERIAL NUMBER EXPIRED
+   1          #include "reg52.h"
+   2          #include "key.h"
+   3          #include "lcd.h"
+   4          #include "dt.h"
+   5          #include "motor.h"
+   6          
+   7          sbit heater=P3^7;//控制加热器的开关接口开关
+   8          
+   9          void main()
+  10          {
+  11   1        lcd_init();  //初始化lcd屏幕
+  12   1        write_string(0,0,"Ture:         ");//打印第一行
+  13   1        write_string(0,1,"Set :         ");//打印第二行
+  14   1      
+  15   1        while(1)
+  16   1        {
+  17   2          shows(Read_Data_From_DHT());//读取并显示DS18B20检测到的温度
+  18   2          key();//按键状态检测
+  19   2          if(T>set_t)//检测实时温度是否高于设置温度
+  20   2          {
+  21   3            if(T-set_t>2)//检测设置温度是否高于实时温度2
+  22   3            {
+  23   4              warning(1);//警报响起
+  24   4            }
+  25   3            motor_start();//启动风扇
+  26   3          }
+  27   2          else
+  28   2          {
+  29   3            motor_stop();//停止风扇
+  30   3          }
+  31   2          if(T<set_t)//检测实时温度是否低于设置温度
+  32   2          {
+  33   3            if(set_t-T>2)//检测设置温度是否低于实时温度2
+  34   3            {
+  35   4              warning(2);//警报响起
+  36   4            }
+  37   3            heater=1;//开启加热器
+  38   3          }
+  39   2          else
+  40   2          {
+  41   3            heater=0;//关闭加热器
+  42   3          }
+  43   2        }
+  44   1      }
+  45          
+  46          
+  47          
+  48          
+  49            
+  50            
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+C51 COMPILER V9.60.7.0   MAIN                                                              04/09/2023 19:44:03 PAGE 2   
+
+   CODE SIZE        =    577    ----
+   CONSTANT SIZE    =     28    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      9       5
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)
